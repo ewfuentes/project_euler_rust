@@ -24,7 +24,7 @@ impl PartialOrd for Palindrome {
 
 impl Ord for Palindrome {
     fn cmp(&self, other: &Palindrome) -> std::cmp::Ordering {
-        return (self.a * self.b).cmp(&(other.a * other.b))
+        return (self.a * self.b).cmp(&(other.a * other.b));
     }
 }
 

@@ -27,7 +27,7 @@ where
         return 0.0;
     }
     return (0..BLOCK_LENGTH)
-        .map(|step| *matrix.index((row+step, col)))
+        .map(|step| *matrix.index((row + step, col)))
         .product();
 }
 fn compute_up_diag_prod<R, C, S>(row: usize, col: usize, matrix: &na::Matrix<f64, R, C, S>) -> f64
@@ -36,13 +36,12 @@ where
     C: na::Dim,
     S: na::Storage<f64, R, C>,
 {
-
     if row < BLOCK_LENGTH - 1 || col > matrix.ncols() - BLOCK_LENGTH {
         return 0.0;
     }
 
     return (0..BLOCK_LENGTH)
-        .map(|step| *matrix.index((row-step, col+step)))
+        .map(|step| *matrix.index((row - step, col + step)))
         .product();
 }
 fn compute_down_diag_prod<R, C, S>(row: usize, col: usize, matrix: &na::Matrix<f64, R, C, S>) -> f64
@@ -51,12 +50,11 @@ where
     C: na::Dim,
     S: na::Storage<f64, R, C>,
 {
-
     if row > matrix.nrows() - BLOCK_LENGTH || col > matrix.ncols() - BLOCK_LENGTH {
         return 0.0;
     }
     return (0..BLOCK_LENGTH)
-        .map(|step| *matrix.index((row+step, col+step)))
+        .map(|step| *matrix.index((row + step, col + step)))
         .product();
 }
 

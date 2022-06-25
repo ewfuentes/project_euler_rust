@@ -1,4 +1,3 @@
-
 struct SeivePrime {
     value: usize,
     last_multiple: Option<usize>,
@@ -59,7 +58,7 @@ impl Iterator for Seive {
                             }
                             let idx = maybe_idx.unwrap();
                             if idx >= self.bools.len() {
-                                break 'outer new_prime*last_valid_mult;
+                                break 'outer new_prime * last_valid_mult;
                             }
                             self.bools[idx] = false;
                             last_valid_mult = mult;
@@ -68,7 +67,7 @@ impl Iterator for Seive {
 
                     self.primes.push(SeivePrime {
                         value: new_prime,
-                        last_multiple: Some(last_multiple)
+                        last_multiple: Some(last_multiple),
                     });
 
                     return Some(new_prime);
@@ -79,8 +78,6 @@ impl Iterator for Seive {
         return Some(0);
     }
 }
-
-
 
 pub fn compute_prime_factors(x: i64) -> std::collections::HashMap<i64, i64> {
     let mut val = x;

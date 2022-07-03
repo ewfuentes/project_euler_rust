@@ -24,7 +24,7 @@ impl Seive {
     }
 
     pub fn new() -> Seive {
-        const SEIVE_SIZE: usize = 1_000_000;
+        const SEIVE_SIZE: usize = 10_000_000;
         return Seive {
             primes: Vec::new(),
             bools: vec![true; SEIVE_SIZE],
@@ -32,10 +32,16 @@ impl Seive {
         };
     }
 
-    fn cross_out_multiples(prime: usize, bools: &mut Vec<bool>, start_idx: usize) -> usize {
+    fn cross_out_multiples(
+        prime: usize,
+        bools: &mut Vec<bool>,
+        start_idx: usize,
+        last_multiple: Option<usize>,
+    ) -> usize {
         loop {
             let mut last_valid_mult = 1;
-            for mult in 1.. {
+            let start_mult = last_multiple.unwrap_or(prime) / prime;
+            for mult in start_mult.. {
                 let maybe_idx = Seive::index_from_value(prime * mult, start_idx);
                 if maybe_idx.is_none() {
                     continue;
@@ -70,7 +76,7 @@ impl Iterator for Seive {
                     // Found a prime!
                     let new_prime = Seive::value_from_index(idx, self.start);
                     let last_multiple =
-                        Seive::cross_out_multiples(new_prime, &mut self.bools, self.start);
+                        Seive::cross_out_multiples(new_prime, &mut self.bools, self.start, None);
 
                     self.primes.push(SeivePrime {
                         value: new_prime,
@@ -86,16 +92,21 @@ impl Iterator for Seive {
         // Let's make a new buffer, cross out the existing primes and try again.
         self.start = Seive::value_from_index(self.bools.len(), self.start);
         let mut bools = vec![true; self.bools.len()];
-        let primes = self.primes.iter().map(|seive_prime| SeivePrime {
-            value: seive_prime.value,
-            last_multiple: seive_prime.last_multiple.map_or(None, |_x| {
-                Some(Seive::cross_out_multiples(
-                    seive_prime.value,
-                    &mut bools,
-                    self.start,
-                ))
-            }),
-        }).collect();
+        let primes = self
+            .primes
+            .iter()
+            .map(|seive_prime| SeivePrime {
+                value: seive_prime.value,
+                last_multiple: seive_prime.last_multiple.map_or(None, |x| {
+                    Some(Seive::cross_out_multiples(
+                        seive_prime.value,
+                        &mut bools,
+                        self.start,
+                        Some(x),
+                    ))
+                }),
+            })
+            .collect();
         self.bools = bools;
         self.primes = primes;
         return self.next();
